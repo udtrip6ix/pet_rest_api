@@ -218,3 +218,26 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+
+# Окружение и секреты
+.env
+.env.local
+.venv/
+venv/
+
+# Базы данных (локальные файлы)
+*.db
+*.sqlite3
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# IDE
+.idea/
+.vscode/
+
+# Системное
+.DS_Store
