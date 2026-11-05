@@ -46,3 +46,29 @@ async def delete_country(country_id: int, db: AsyncSession = Depends(get_db)):
     await db.delete(country)
     await db.commit()
     return None
+
+
+@router.put("/{country_id}", response_model=CountryResponse)
+async def update_country(
+    country_id: int, 
+    country_in: CountryCreate, 
+    db: AsyncSession = Depends(get_db)
+):
+    result = await db.execute(select(Country).where(Country.id == country_id))
+    country = result.scalar_one_or_none()
+    
+    if not country:
+        raise HTTPException(status_code=404, detail="Страна не найдена")
+    
+    if country_in.iso_code != country.iso_code:
+        result = await db.execute(select(Country).where(Country.iso_code == country_in.iso_code))
+        if result.scalar_one_or_none():
+            raise HTTPException(status_code=400, detail="Страна с таким ISO-кодом уже существует")
+            
+    country.name = country_in.name
+    country.iso_code = country_in.iso_code
+    
+    await db.commit()
+    await db.refresh(country)
+    
+    return country
